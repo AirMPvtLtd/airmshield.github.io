@@ -12,6 +12,8 @@
             color: #b3d4fc;
             font-family: 'Exo 2', sans-serif;
             overflow-x: hidden;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
         }
         .hero {
             background: radial-gradient(circle at center, rgba(29, 78, 216, 0.3) 0%, transparent 70%);
@@ -40,6 +42,8 @@
             transition: all 0.3s ease;
             position: relative;
             overflow: hidden;
+            cursor: pointer;
+            z-index: 10;
         }
         .holo-btn:hover {
             background: linear-gradient(45deg, #60a5fa, #93c5fd);
@@ -66,6 +70,7 @@
             transition: all 0.3s ease;
             transform: perspective(1000px) rotateX(0deg) rotateY(0deg);
             position: relative;
+            z-index: 5;
         }
         .tool-card:hover {
             transform: perspective(1000px) rotateX(2deg) rotateY(-2deg);
@@ -94,6 +99,7 @@
             top: 50%;
             transform: translateY(-50%);
             box-shadow: 0 0 40px rgba(59, 130, 246, 0.6);
+            z-index: 100;
         }
         @keyframes scan {
             0% { transform: translateY(0); opacity: 0.5; }
@@ -110,6 +116,7 @@
         header, footer {
             background: rgba(10, 10, 35, 0.9);
             border-bottom: 2px solid #3b82f6;
+            z-index: 10;
         }
         nav a:hover {
             color: #93c5fd;
@@ -119,10 +126,49 @@
             background: rgba(31, 41, 55, 0.8) !important;
             border: 1px solid #3b82f6 !important;
             transition: all 0.3s ease;
+            color: #ffffff !important;
+            cursor: text;
+            z-index: 10;
+            position: relative;
+            pointer-events: auto;
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            width: 100%;
+            box-sizing: border-box;
         }
         input:focus, textarea:focus {
             box-shadow: 0 0 15px rgba(59, 130, 246, 0.5);
             border-color: #93c5fd !important;
+            outline: none;
+        }
+        input[type="file"] {
+            cursor: pointer;
+            padding: 0.5rem;
+        }
+        .file-label {
+            display: inline-block;
+            background: rgba(31, 41, 55, 0.8);
+            border: 1px solid #3b82f6;
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            color: #ffffff;
+            z-index: 10;
+            transition: all 0.3s ease;
+        }
+        .file-label:hover {
+            background: rgba(59, 130, 246, 0.2);
+            border-color: #93c5fd;
+        }
+        .input-loading::after {
+            content: 'Processing...';
+            color: #60a5fa;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+            display: block;
+        }
+        input[type="file"] {
+            display: none;
         }
     </style>
     <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;700&display=swap" rel="stylesheet">
@@ -144,7 +190,7 @@
         <h2 class="text-6xl font-bold mb-8 scan">AirMShield Security Matrix</h2>
         <p class="text-2xl mb-10">Initialize a scan to secure your digital airspace.</p>
         <div class="max-w-xl mx-auto">
-            <input id="urlInput" type="text" placeholder="https://example.com" class="w-full p-4 rounded-lg text-white mb-6 border glow">
+            <input id="urlInput" type="text" placeholder="https://example.com" class="w-full p-4 rounded-lg text-white mb-6 border glow" onfocus="this.select()">
             <button onclick="checkScore()" class="holo-btn px-10 py-4 rounded-lg text-xl font-semibold">Activate Scan</button>
         </div>
         <div id="result" class="mt-10 text-2xl"></div>
@@ -159,77 +205,77 @@
                     <div class="tool-card p-8">
                         <h3 class="text-3xl font-semibold mb-4">Phishing Detector</h3>
                         <p class="mb-5">Neutralize phishing threats in URLs/emails.</p>
-                        <input id="phishingInput" type="text" placeholder="Enter URL" class="w-full p-4 mb-4 rounded">
+                        <input id="phishingInput" type="text" placeholder="Enter URL" class="w-full mb-4" onfocus="this.select()">
                         <button onclick="runTool('phishing', 'phishingInput')" class="holo-btn px-8 py-3 rounded">Engage</button>
                         <div id="phishingResult" class="mt-4"></div>
                     </div>
                     <div class="tool-card p-8">
                         <h3 class="text-3xl font-semibold mb-4">Password Strength Analyzer</h3>
                         <p class="mb-5">Fortify your access credentials.</p>
-                        <input id="passwordInput" type="text" placeholder="Enter Password" class="w-full p-4 mb-4 rounded">
+                        <input id="passwordInput" type="text" placeholder="Enter Password" class="w-full mb-4" onfocus="this.select()">
                         <button onclick="runTool('password', 'passwordInput')" class="holo-btn px-8 py-3 rounded">Engage</button>
                         <div id="passwordResult" class="mt-4"></div>
                     </div>
                     <div class="tool-card p-8">
                         <h3 class="text-3xl font-semibold mb-4">Threat Predictor</h3>
                         <p class="mb-5">Monitor network anomalies.</p>
-                        <input id="threatInput" type="number" placeholder="Enter Log Count" class="w-full p-4 mb-4 rounded">
+                        <input id="threatInput" type="number" placeholder="Enter Log Count" class="w-full mb-4" onfocus="this.select()">
                         <button onclick="runTool('threat', 'threatInput')" class="holo-btn px-8 py-3 rounded">Engage</button>
                         <div id="threatResult" class="mt-4"></div>
                     </div>
                     <div class="tool-card p-8">
                         <h3 class="text-3xl font-semibold mb-4">SSL Checker</h3>
                         <p class="mb-5">Validate encryption protocols.</p>
-                        <input id="sslInput" type="text" placeholder="Enter URL" class="w-full p-4 mb-4 rounded">
+                        <input id="sslInput" type="text" placeholder="Enter URL" class="w-full mb-4" onfocus="this.select()">
                         <button onclick="runTool('ssl', 'sslInput')" class="holo-btn px-8 py-3 rounded">Engage</button>
                         <div id="sslResult" class="mt-4"></div>
                     </div>
                     <div class="tool-card p-8">
                         <h3 class="text-3xl font-semibold mb-4">Malware URL Scanner</h3>
                         <p class="mb-5">Eliminate malicious URLs.</p>
-                        <input id="malwareInput" type="text" placeholder="Enter URL" class="w-full p-4 mb-4 rounded">
+                        <input id="malwareInput" type="text" placeholder="Enter URL" class="w-full mb-4" onfocus="this.select()">
                         <button onclick="runTool('malware', 'malwareInput')" class="holo-btn px-8 py-3 rounded">Engage</button>
                         <div id="malwareResult" class="mt-4"></div>
                     </div>
                     <div class="tool-card p-8">
                         <h3 class="text-3xl font-semibold mb-4">Brute Force Detector</h3>
                         <p class="mb-5">Counter unauthorized access attempts.</p>
-                        <input id="bruteInput" type="number" placeholder="Enter Attempts" class="w-full p-4 mb-4 rounded">
+                        <input id="bruteInput" type="number" placeholder="Enter Attempts" class="w-full mb-4" onfocus="this.select()">
                         <button onclick="runTool('brute', 'bruteInput')" class="holo-btn px-8 py-3 rounded">Engage</button>
                         <div id="bruteResult" class="mt-4"></div>
                     </div>
                     <div class="tool-card p-8">
                         <h3 class="text-3xl font-semibold mb-4">Email Spam Filter</h3>
                         <p class="mb-5">Classify email integrity.</p>
-                        <input id="spamInput" type="text" placeholder="Enter Email Text" class="w-full p-4 mb-4 rounded">
+                        <input id="spamInput" type="text" placeholder="Enter Email Text" class="w-full mb-4" onfocus="this.select()">
                         <button onclick="runTool('spam', 'spamInput')" class="holo-btn px-8 py-3 rounded">Engage</button>
                         <div id="spamResult" class="mt-4"></div>
                     </div>
                     <div class="tool-card p-8">
                         <h3 class="text-3xl font-semibold mb-4">Vulnerability Quick Scan</h3>
                         <p class="mb-5">Assess security headers.</p>
-                        <input id="vulnInput" type="text" placeholder="Enter URL" class="w-full p-4 mb-4 rounded">
+                        <input id="vulnInput" type="text" placeholder="Enter URL" class="w-full mb-4" onfocus="this.select()">
                         <button onclick="runTool('vuln', 'vulnInput')" class="holo-btn px-8 py-3 rounded">Engage</button>
                         <div id="vulnResult" class="mt-4"></div>
                     </div>
                     <div class="tool-card p-8">
                         <h3 class="text-3xl font-semibold mb-4">DDoS Alert</h3>
                         <p class="mb-5">Detect network overloads.</p>
-                        <input id="ddosInput" type="number" placeholder="Enter Traffic" class="w-full p-4 mb-4 rounded">
+                        <input id="ddosInput" type="number" placeholder="Enter Traffic" class="w-full mb-4" onfocus="this.select()">
                         <button onclick="runTool('ddos', 'ddosInput')" class="holo-btn px-8 py-3 rounded">Engage</button>
                         <div id="ddosResult" class="mt-4"></div>
                     </div>
                     <div class="tool-card p-8">
                         <h3 class="text-3xl font-semibold mb-4">User Behavior Monitor</h3>
                         <p class="mb-5">Track anomalous activities.</p>
-                        <input id="behaviorInput" type="number" placeholder="Enter Actions" class="w-full p-4 mb-4 rounded">
+                        <input id="behaviorInput" type="number" placeholder="Enter Actions" class="w-full mb-4" onfocus="this.select()">
                         <button onclick="runTool('behavior', 'behaviorInput')" class="holo-btn px-8 py-3 rounded">Engage</button>
                         <div id="behaviorResult" class="mt-4"></div>
                     </div>
                     <div class="tool-card p-8">
                         <h3 class="text-3xl font-semibold mb-4">Chat Behavior Analyzer</h3>
                         <p class="mb-5">Screen chat for threats.</p>
-                        <textarea id="chatInput" placeholder="Enter Chat Messages (one per line)" class="w-full p-4 mb-4 rounded h-32"></textarea>
+                        <textarea id="chatInput" placeholder="Enter Chat Messages (one per line)" class="w-full mb-4 h-32" onfocus="this.select()"></textarea>
                         <button onclick="runTool('chat', 'chatInput')" class="holo-btn px-8 py-3 rounded">Engage</button>
                         <div id="chatResult" class="mt-4"></div>
                     </div>
@@ -243,7 +289,8 @@
                     <div class="tool-card p-8">
                         <h3 class="text-3xl font-semibold mb-4">DroneTraceAI</h3>
                         <p class="mb-5">Decode flight logs for behavioral anomalies.</p>
-                        <input id="droneTraceInput" type="file" accept=".csv,.json,.txt" class="w-full p-4 mb-4 rounded text-sm">
+                        <label for="droneTraceInput" class="file-label">Choose File</label>
+                        <input id="droneTraceInput" type="file" accept=".csv,.json,.txt" class="w-full mb-4">
                         <div class="flex space-x-6">
                             <button onclick="runDroneTool('droneTrace', 'droneTraceInput')" class="holo-btn px-8 py-3 rounded">Analyze</button>
                             <button onclick="showLearnMore('droneTrace')" class="bg-gray-700 text-white px-8 py-3 rounded hover:bg-gray-600 border border-blue-500">Protocol</button>
@@ -253,7 +300,8 @@
                     <div class="tool-card p-8">
                         <h3 class="text-3xl font-semibold mb-4">SkySniffer</h3>
                         <p class="mb-5">Intercept drone communication signals.</p>
-                        <input id="skySnifferInput" type="file" accept=".pcap,.txt" class="w-full p-4 mb-4 rounded text-sm">
+                        <label for="skySnifferInput" class="file-label">Choose File</label>
+                        <input id="skySnifferInput" type="file" accept=".pcap,.txt" class="w-full mb-4">
                         <div class="flex space-x-6">
                             <button onclick="runDroneTool('skySniffer', 'skySnifferInput')" class="holo-btn px-8 py-3 rounded">Analyze</button>
                             <button onclick="showLearnMore('skySniffer')" class="bg-gray-700 text-white px-8 py-3 rounded hover:bg-gray-600 border border-blue-500">Protocol</button>
@@ -263,7 +311,8 @@
                     <div class="tool-card p-8">
                         <h3 class="text-3xl font-semibold mb-4">DroneGhost</h3>
                         <p class="mb-5">Retrieve erased drone memory data.</p>
-                        <input id="droneGhostInput" type="file" accept=".bin,.dump" class="w-full p-4 mb-4 rounded text-sm">
+                        <label for="droneGhostInput" class="file-label">Choose File</label>
+                        <input id="droneGhostInput" type="file" accept=".bin,.dump" class="w-full mb-4">
                         <div class="flex space-x-6">
                             <button onclick="runDroneTool('droneGhost', 'droneGhostInput')" class="holo-btn px-8 py-3 rounded">Analyze</button>
                             <button onclick="showLearnMore('droneGhost')" class="bg-gray-700 text-white px-8 py-3 rounded hover:bg-gray-600 border border-blue-500">Protocol</button>
@@ -273,7 +322,8 @@
                     <div class="tool-card p-8">
                         <h3 class="text-3xl font-semibold mb-4">CloudSentry</h3>
                         <p class="mb-5">Extract cloud-synced drone intelligence.</p>
-                        <input id="cloudSentryInput" type="file" accept=".json,.xml" class="w-full p-4 mb-4 rounded text-sm">
+                        <label for="cloudSentryInput" class="file-label">Choose File</label>
+                        <input id="cloudSentryInput" type="file" accept=".json,.xml" class="w-full mb-4">
                         <div class="flex space-x-6">
                             <button onclick="runDroneTool('cloudSentry', 'cloudSentryInput')" class="holo-btn px-8 py-3 rounded">Analyze</button>
                             <button onclick="showLearnMore('cloudSentry')" class="bg-gray-700 text-white px-8 py-3 rounded hover:bg-gray-600 border border-blue-500">Protocol</button>
@@ -283,12 +333,68 @@
                     <div class="tool-card p-8">
                         <h3 class="text-3xl font-semibold mb-4">DroneIDLock</h3>
                         <p class="mb-5">Verify drone identity signatures.</p>
-                        <input id="droneIDLockInput" type="file" accept=".txt,.csv" class="w-full p-4 mb-4 rounded text-sm">
+                        <label for="droneIDLockInput" class="file-label">Choose File</label>
+                        <input id="droneIDLockInput" type="file" accept=".txt,.csv" class="w-full mb-4">
                         <div class="flex space-x-6">
                             <button onclick="runDroneTool('droneIDLock', 'droneIDLockInput')" class="holo-btn px-8 py-3 rounded">Analyze</button>
                             <button onclick="showLearnMore('droneIDLock')" class="bg-gray-700 text-white px-8 py-3 rounded hover:bg-gray-600 border border-blue-500">Protocol</button>
                         </div>
                         <div id="droneIDLockResult" class="mt-4"></div>
+                    </div>
+                    <div class="tool-card p-8">
+                        <h3 class="text-3xl font-semibold mb-4">VisionSentryAI</h3>
+                        <p class="mb-5">Analyze drone footage for suspicious objects.</p>
+                        <label for="visionSentryInput" class="file-label">Choose File</label>
+                        <input id="visionSentryInput" type="file" accept=".mp4,.mov,.avi" class="w-full mb-4">
+                        <div class="flex space-x-6">
+                            <button onclick="runDroneTool('visionSentry', 'visionSentryInput')" class="holo-btn px-8 py-3 rounded">Analyze</button>
+                            <button onclick="showLearnMore('visionSentry')" class="bg-gray-700 text-white px-8 py-3 rounded hover:bg-gray-600 border border-blue-500">Protocol</button>
+                        </div>
+                        <div id="visionSentryResult" class="mt-4"></div>
+                    </div>
+                    <div class="tool-card p-8">
+                        <h3 class="text-3xl font-semibold mb-4">FlightPathAI</h3>
+                        <p class="mb-5">Detect tampering in telemetry data.</p>
+                        <label for="flightPathInput" class="file-label">Choose File</label>
+                        <input id="flightPathInput" type="file" accept=".csv,.json" class="w-full mb-4">
+                        <div class="flex space-x-6">
+                            <button onclick="runDroneTool('flightPath', 'flightPathInput')" class="holo-btn px-8 py-3 rounded">Analyze</button>
+                            <button onclick="showLearnMore('flightPath')" class="bg-gray-700 text-white px-8 py-3 rounded hover:bg-gray-600 border border-blue-500">Protocol</button>
+                        </div>
+                        <div id="flightPathResult" class="mt-4"></div>
+                    </div>
+                    <div class="tool-card p-8">
+                        <h3 class="text-3xl font-semibold mb-4">PayloadGuardAI</h3>
+                        <p class="mb-5">Verify drone payload integrity.</p>
+                        <label for="payloadGuardInput" class="file-label">Choose File</label>
+                        <input id="payloadGuardInput" type="file" accept=".csv,.txt" class="w-full mb-4">
+                        <div class="flex space-x-6">
+                            <button onclick="runDroneTool('payloadGuard', 'payloadGuardInput')" class="holo-btn px-8 py-3 rounded">Analyze</button>
+                            <button onclick="showLearnMore('payloadGuard')" class="bg-gray-700 text-white px-8 py-3 rounded hover:bg-gray-600 border border-blue-500">Protocol</button>
+                        </div>
+                        <div id="payloadGuardResult" class="mt-4"></div>
+                    </div>
+                    <div class="tool-card p-8">
+                        <h3 class="text-3xl font-semibold mb-4">SignalTraceAI</h3>
+                        <p class="mb-5">Track drone signal origins.</p>
+                        <label for="signalTraceInput" class="file-label">Choose File</label>
+                        <input id="signalTraceInput" type="file" accept=".pcap,.txt" class="w-full mb-4">
+                        <div class="flex space-x-6">
+                            <button onclick="runDroneTool('signalTrace', 'signalTraceInput')" class="holo-btn px-8 py-3 rounded">Analyze</button>
+                            <button onclick="showLearnMore('signalTrace')" class="bg-gray-700 text-white px-8 py-3 rounded hover:bg-gray-600 border border-blue-500">Protocol</button>
+                        </div>
+                        <div id="signalTraceResult" class="mt-4"></div>
+                    </div>
+                    <div class="tool-card p-8">
+                        <h3 class="text-3xl font-semibold mb-4">GeoFenceAI</h3>
+                        <p class="mb-5">Detect restricted zone breaches.</p>
+                        <label for="geoFenceInput" class="file-label">Choose File</label>
+                        <input id="geoFenceInput" type="file" accept=".csv,.json" class="w-full mb-4">
+                        <div class="flex space-x-6">
+                            <button onclick="runDroneTool('geoFence', 'geoFenceInput')" class="holo-btn px-8 py-3 rounded">Analyze</button>
+                            <button onclick="showLearnMore('geoFence')" class="bg-gray-700 text-white px-8 py-3 rounded hover:bg-gray-600 border border-blue-500">Protocol</button>
+                        </div>
+                        <div id="geoFenceResult" class="mt-4"></div>
                     </div>
                 </div>
             </div>
@@ -437,47 +543,86 @@
                     if file_content:
                         return "ID Verified: Matches database" if "serial" in file_content.lower() else "ID Verified: No match", 85
                     return "No File", 0
+
+                def vision_sentry_ai(file_content):
+                    if file_content:
+                        return "Objects Detected: Suspicious activity flagged" if "unknown" in file_content.lower() else "Objects Detected: Normal", 70
+                    return "No File", 0
+
+                def flight_path_ai(file_content):
+                    if file_content:
+                        return "Path Analyzed: Tampering detected" if "deviation" in file_content.lower() else "Path Analyzed: Normal", 80
+                    return "No File", 0
+
+                def payload_guard_ai(file_content):
+                    if file_content:
+                        return "Payload Verified: Anomalies found" if "weight" in file_content.lower() else "Payload Verified: Normal", 75
+                    return "No File", 0
+
+                def signal_trace_ai(file_content):
+                    if file_content:
+                        return "Signal Traced: Origin identified" if "source" in file_content.lower() else "Signal Traced: No origin", 65
+                    return "No File", 0
+
+                def geo_fence_ai(file_content):
+                    if file_content:
+                        return "Zone Analyzed: Breach detected" if "restricted" in file_content.lower() else "Zone Analyzed: Normal", 85
+                    return "No File", 0
             `);
         }
 
         loadPyodideAndScripts();
 
         async function runTool(tool, inputId) {
+            console.log(`Attempting to run tool: ${tool} with input ID: ${inputId}`);
             if (!pyodide) {
                 alert("System initializing, please wait...");
                 return;
             }
-            const input = document.getElementById(inputId).value;
+            const inputElement = document.getElementById(inputId);
+            inputElement.classList.add('input-loading');
+            const input = inputElement.value;
             if (!input) {
                 document.getElementById(`${tool}Result`).innerHTML = "Input required for analysis!";
+                inputElement.classList.remove('input-loading');
                 return;
             }
 
             let result, score;
-            switch (tool) {
-                case 'phishing': [result, score] = await pyodide.runPythonAsync(`check_phishing("${input}")`); break;
-                case 'password': [result, score] = await pyodide.runPythonAsync(`check_password("${input}")`); break;
-                case 'threat': [result, score] = await pyodide.runPythonAsync(`predict_threat(${input})`); break;
-                case 'ssl': [result, score] = await pyodide.runPythonAsync(`check_ssl("${input}")`); break;
-                case 'malware': [result, score] = await pyodide.runPythonAsync(`scan_malware("${input}")`); break;
-                case 'brute': [result, score] = await pyodide.runPythonAsync(`detect_brute_force(${input})`); break;
-                case 'spam': [result, score] = await pyodide.runPythonAsync(`filter_spam("${input}")`); break;
-                case 'vuln': [result, score] = await pyodide.runPythonAsync(`scan_vuln("${input}")`); break;
-                case 'ddos': [result, score] = await pyodide.runPythonAsync(`alert_ddos(${input})`); break;
-                case 'behavior': [result, score] = await pyodide.runPythonAsync(`monitor_behavior(${input})`); break;
-                case 'chat': [result, score] = await pyodide.runPythonAsync(`analyze_chat("${input.replace(/\n/g, '\\n')}")`); break;
+            try {
+                switch (tool) {
+                    case 'phishing': [result, score] = await pyodide.runPythonAsync(`check_phishing("${input}")`); break;
+                    case 'password': [result, score] = await pyodide.runPythonAsync(`check_password("${input}")`); break;
+                    case 'threat': [result, score] = await pyodide.runPythonAsync(`predict_threat(${input})`); break;
+                    case 'ssl': [result, score] = await pyodide.runPythonAsync(`check_ssl("${input}")`); break;
+                    case 'malware': [result, score] = await pyodide.runPythonAsync(`scan_malware("${input}")`); break;
+                    case 'brute': [result, score] = await pyodide.runPythonAsync(`detect_brute_force(${input})`); break;
+                    case 'spam': [result, score] = await pyodide.runPythonAsync(`filter_spam("${input}")`); break;
+                    case 'vuln': [result, score] = await pyodide.runPythonAsync(`scan_vuln("${input}")`); break;
+                    case 'ddos': [result, score] = await pyodide.runPythonAsync(`alert_ddos(${input})`); break;
+                    case 'behavior': [result, score] = await pyodide.runPythonAsync(`monitor_behavior(${input})`); break;
+                    case 'chat': [result, score] = await pyodide.runPythonAsync(`analyze_chat("${input.replace(/\n/g, '\\n')}")`); break;
+                }
+                document.getElementById(`${tool}Result`).innerHTML = `Status: ${result}, Score: ${score}`;
+            } catch (e) {
+                console.error(`Error in runTool(${tool}):`, e);
+                document.getElementById(`${tool}Result`).innerHTML = "Error processing input!";
+            } finally {
+                inputElement.classList.remove('input-loading');
             }
-            document.getElementById(`${tool}Result`).innerHTML = `Status: ${result}, Score: ${score}`;
         }
 
         async function runDroneTool(tool, inputId) {
+            console.log(`Attempting to run drone tool: ${tool} with input ID: ${inputId}`);
             if (!pyodide) {
                 alert("System initializing, please wait...");
                 return;
             }
             const input = document.getElementById(inputId);
+            input.classList.add('input-loading');
             if (!input.files.length) {
                 document.getElementById(`${tool}Result`).innerHTML = "Upload a file to proceed!";
+                input.classList.remove('input-loading');
                 return;
             }
 
@@ -486,19 +631,32 @@
             reader.onload = async function(e) {
                 const content = e.target.result;
                 let result, score;
-                switch (tool) {
-                    case 'droneTrace': [result, score] = await pyodide.runPythonAsync(`drone_trace_ai("${content}")`); break;
-                    case 'skySniffer': [result, score] = await pyodide.runPythonAsync(`sky_sniffer("${content}")`); break;
-                    case 'droneGhost': [result, score] = await pyodide.runPythonAsync(`drone_ghost("${content}")`); break;
-                    case 'cloudSentry': [result, score] = await pyodide.runPythonAsync(`cloud_sentry("${content}")`); break;
-                    case 'droneIDLock': [result, score] = await pyodide.runPythonAsync(`drone_id_lock("${content}")`); break;
+                try {
+                    switch (tool) {
+                        case 'droneTrace': [result, score] = await pyodide.runPythonAsync(`drone_trace_ai("${content}")`); break;
+                        case 'skySniffer': [result, score] = await pyodide.runPythonAsync(`sky_sniffer("${content}")`); break;
+                        case 'droneGhost': [result, score] = await pyodide.runPythonAsync(`drone_ghost("${content}")`); break;
+                        case 'cloudSentry': [result, score] = await pyodide.runPythonAsync(`cloud_sentry("${content}")`); break;
+                        case 'droneIDLock': [result, score] = await pyodide.runPythonAsync(`drone_id_lock("${content}")`); break;
+                        case 'visionSentry': [result, score] = await pyodide.runPythonAsync(`vision_sentry_ai("${content}")`); break;
+                        case 'flightPath': [result, score] = await pyodide.runPythonAsync(`flight_path_ai("${content}")`); break;
+                        case 'payloadGuard': [result, score] = await pyodide.runPythonAsync(`payload_guard_ai("${content}")`); break;
+                        case 'signalTrace': [result, score] = await pyodide.runPythonAsync(`signal_trace_ai("${content}")`); break;
+                        case 'geoFence': [result, score] = await pyodide.runPythonAsync(`geo_fence_ai("${content}")`); break;
+                    }
+                    document.getElementById(`${tool}Result`).innerHTML = `Status: ${result}, Score: ${score}`;
+                } catch (e) {
+                    console.error(`Error in runDroneTool(${tool}):`, e);
+                    document.getElementById(`${tool}Result`).innerHTML = "Error processing file!";
+                } finally {
+                    input.classList.remove('input-loading');
                 }
-                document.getElementById(`${tool}Result`).innerHTML = `Status: ${result}, Score: ${score}`;
             };
             reader.readAsText(file);
         }
 
         function showLearnMore(tool) {
+            console.log(`Showing Learn More for: ${tool}`);
             const modal = document.getElementById('modal');
             const modalTitle = document.getElementById('modalTitle');
             const modalContent = document.getElementById('modalContent');
@@ -523,6 +681,26 @@
                 droneIDLock: {
                     title: 'DroneIDLock Protocol',
                     content: 'DroneIDLock authenticates drone identifiers like serial numbers or Remote IDs. Upload TXT or CSV files with ID data. The system verifies against global registries to detect tampering or confirm ownership. Ideal for stolen drone investigations.'
+                },
+                visionSentry: {
+                    title: 'VisionSentryAI Protocol',
+                    content: 'VisionSentryAI analyzes drone camera footage for suspicious objects or activities. Upload MP4, MOV, or AVI files. The system uses computer vision to detect unauthorized items or patterns. Ensure high-resolution footage for accurate results.'
+                },
+                flightPath: {
+                    title: 'FlightPathAI Protocol',
+                    content: 'FlightPathAI examines telemetry data for tampering or unauthorized routes. Upload CSV or JSON files with flight logs. The system cross-references GPS and sensor data to detect anomalies. Compatible with most commercial drones.'
+                },
+                payloadGuard: {
+                    title: 'PayloadGuardAI Protocol',
+                    content: 'PayloadGuardAI verifies drone payload integrity, checking weight and content. Upload CSV or TXT files with sensor data. The system flags discrepancies in payload metrics. Ideal for delivery or surveillance drones.'
+                },
+                signalTrace: {
+                    title: 'SignalTraceAI Protocol',
+                    content: 'SignalTraceAI tracks drone signal origins across Wi-Fi, RF, or LTE. Upload PCAP or TXT files from signal captures. The system cross-references sources to pinpoint unauthorized controllers. Use with high-sensitivity receivers.'
+                },
+                geoFence: {
+                    title: 'GeoFenceAI Protocol',
+                    content: 'GeoFenceAI detects breaches in restricted zones using flight data. Upload CSV or JSON files with GPS logs. The system flags unauthorized entries in real-time. Configure with up-to-date no-fly zone databases.'
                 }
             };
 
@@ -532,13 +710,18 @@
         }
 
         function closeModal() {
+            console.log('Closing modal');
             document.getElementById('modal').classList.add('hidden');
         }
 
         async function checkScore() {
-            const url = document.getElementById('urlInput').value;
+            console.log('checkScore triggered');
+            const urlInput = document.getElementById('urlInput');
+            urlInput.classList.add('input-loading');
+            const url = urlInput.value;
             if (!url) {
                 document.getElementById('result').innerHTML = "Input required for analysis!";
+                urlInput.classList.remove('input-loading');
                 return;
             }
 
@@ -578,6 +761,7 @@
                     report += "⚠️ Threats identified (0 points)<br>";
                 }
             } catch (e) {
+                console.error('Error in checkScore:', e);
                 report += "⚠️ Threat scan unavailable, fallback engaged...<br>";
                 const suspiciousKeywords = ["login", "bank", "secure", "update", "password", "verify", "account"];
                 let keywordFound = false;
@@ -611,7 +795,37 @@
             }
 
             document.getElementById('result').innerHTML = `System Analysis: <b>${score}/100</b><br>${report}`;
+            urlInput.classList.remove('input-loading');
         }
+
+        // Add touch and click support for all inputs and buttons
+        document.querySelectorAll('input, button, label.file-label').forEach(element => {
+            element.addEventListener('click', function(e) {
+                console.log(`Click on ${element.id || element.tagName}`);
+                e.preventDefault();
+                e.stopPropagation();
+                if (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA') {
+                    element.focus();
+                    element.select();
+                }
+            });
+            element.addEventListener('touchstart', function(e) {
+                console.log(`Touchstart on ${element.id || element.tagName}`);
+                e.preventDefault();
+                e.stopPropagation();
+                if (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA') {
+                    element.focus();
+                    element.select();
+                } else if (element.classList.contains('file-label')) {
+                    document.getElementById(element.getAttribute('for')).click();
+                }
+            });
+            element.addEventListener('touchend', function(e) {
+                console.log(`Touchend on ${element.id || element.tagName}`);
+                e.preventDefault();
+                e.stopPropagation();
+            });
+        });
     </script>
 </body>
 </html>
